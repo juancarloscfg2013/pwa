@@ -4,6 +4,7 @@ const Google = () => {
         <div>
             <GoogleLogin
             locale='en-US'
+            context='use'
 
             onSuccess={credentialResponse => {
                 console.log(credentialResponse);

@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  pwa:
+    build:
+      context: .
+      target: 'production-stage'
+    container_name: pwa
+    restart: always
+    networks:
+       - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pwa.rule=Host(`pwa.alfredoacservices.com`)"
+      - "traefik.http.routers.pwa.entrypoints=web"
+      - "traefik.http.services.pwa.loadbalancer.server.port=80"
+      - "traefik.http.middlewares.pwa-https-redirect.redirectscheme.scheme=websecure"
+      - "traefik.http.routers.pwa.middlewares=pwa-https-redirect"
+      - "traefik.http.routers.pwa-secure.entrypoints=websecure"
+      - "traefik.http.routers.pwa-secure.rule=Host(`pwa.alfredoacservices.com`)"
+      - "traefik.http.routers.pwa-secure.tls=true"
+      - "traefik.http.routers.pwa-secure.tls.certresolver=letsencrypt"
+    volumes:
+    - '.:/app'
+    #command: /bin/sh -c "yarn && quasar dev"
+networks:
+  proxy:
+    external: true
